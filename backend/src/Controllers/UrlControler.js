@@ -1,9 +1,10 @@
 import { nanoid } from "nanoid";
 import { ShortUrl } from "../Models/UrlsModels.js";
 
+// POST: Create Short URL
 export const postURL = async (req, res) => {
   try {
-    const { url } = req.body;
+    const { url, userId } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: "URL is required" });
@@ -16,44 +17,49 @@ export const postURL = async (req, res) => {
 
     const shortCode = nanoid(7);
 
-    const newShortUrl = new ShortUrl({
+    const shortUrlData = {
       fullUrl: url,
-      shortUrl: shortCode
-    });
+      shortUrl: shortCode,
+    };
 
+    if (userId) {
+      shortUrlData.user = userId;
+    }
+
+    const newShortUrl = new ShortUrl(shortUrlData);
     await newShortUrl.save();
 
-      res.send( newShortUrl)
-    
+    res.status(201).json({
+      message: "Short URL created successfully",
+      shortUrl: shortCode,
+      fullUrl: url,
+      user: userId || "Guest",
+    });
+
   } catch (error) {
     console.error("Error creating short URL:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
 
+// GET: Redirect by Short URL
+export const getShortUrl = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const url = await ShortUrl.findOneAndUpdate(
+      { shortUrl: id },
+      { $inc: { clicks: 1 } },
+      { new: true }
+    );
 
-
-
-// Get Short Url:
-
-
-
-export const getShortURl = async(req,res)=>{
-
-    const {id} = req.params
-    const url = await ShortUrl.findOne({shortUrl:id});
-
-    if(url){
-        res.redirect(url.fullUrl)
-    }else{
-        res.status(401).json("NOt Found");
+    if (url) {
+      return res.redirect(url.fullUrl);
+    } else {
+      return res.status(404).json({ error: "Short URL not found" });
     }
-
-    console.log(url)
- 
-
-
-
-
-}
+  } catch (error) {
+    console.error("Error redirecting to full URL:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};

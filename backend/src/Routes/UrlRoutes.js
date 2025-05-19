@@ -1,5 +1,5 @@
 import express from 'express'
-import { getShortURl, postURL } from '../Controllers/UrlControler.js';
+import {  getShortUrl, postURL } from '../Controllers/UrlControler.js';
 
 export const router = express.Router();
 
@@ -10,4 +10,4 @@ router.post('/add-url',postURL);
 
 
 // Get Url:
-router.get('/:id',getShortURl); 
+router.get('/:id',getShortUrl); 
