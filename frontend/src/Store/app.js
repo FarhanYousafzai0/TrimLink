@@ -1,11 +1,11 @@
 // src/Store/app.js
 
 import { configureStore } from '@reduxjs/toolkit';
-import { shortUrlSlice } from '../Features/UrlSlice';
+import  shortUrlSlice  from '../Features/UrlSlice.js';
 
 const store = configureStore({
   reducer: {
-    shortUrl: shortUrlSlice,
+    Url: shortUrlSlice,
   },
 });
 

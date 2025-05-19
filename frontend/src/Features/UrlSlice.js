@@ -28,7 +28,7 @@ export const fetchOriginalUrl = createAsyncThunk(
   }
 );
 
-export const shortUrlSlice = createSlice({
+ const shortUrlSlice = createSlice({
   name: "shortUrl",
   initialState: {
     urlLoading: false,

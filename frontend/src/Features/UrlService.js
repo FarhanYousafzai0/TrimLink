@@ -7,6 +7,7 @@ export const posttUrl = async (urlData) => {
   try {
     const response = await axios.post(`${url}/add-url`, urlData);
     return response.data;
+    console.log(response.data)
   } catch (error) {
     console.error("Error creating short URL:", error.response?.data || error.message);
     throw error;

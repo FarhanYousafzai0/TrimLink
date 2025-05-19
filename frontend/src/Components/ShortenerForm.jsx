@@ -8,7 +8,7 @@ const ShortenerForm = () => {
   const [url, seturl] = useState("");
 
   const dispatch = useDispatch();
-  const { urlError, urlLoading, originalUrl, shortUrl } = useSelector((state) => state.shortUrl);
+const { urlError, urlLoading, originalUrl, shortUrl } = useSelector((state) => state.Url);
 
   const handleSumbiturl = (e) => {
     e.preventDefault();
@@ -48,19 +48,19 @@ const ShortenerForm = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              disabled={loading}
+              disabled={urlLoading}
               className={`px-8 py-4 rounded-lg cursor-pointer font-semibold text-white ${
-                loading
+               urlLoading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
               } transition-all shadow-lg`}
             >
-              {loading ? "Processing..." : "Shorten URL"}
+              {urlLoading ? "Processing..." : "Shorten URL"}
             </motion.button>
           </div>
         </form>
 
-        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+        {urlError && <p className="text-red-600 text-center mb-4">{urlError}</p>}
 
         <AnimatePresence>
           {shortenedUrl && (
