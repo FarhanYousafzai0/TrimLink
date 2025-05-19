@@ -30,3 +30,30 @@ export const postURL = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
+
+
+
+// Get Short Url:
+
+
+
+export const getShortURl = async(req,res)=>{
+
+    const {id} = req.params
+    const url = await ShortUrl.findOne({shortUrl:id});
+
+    if(url){
+        res.redirect(url.fullUrl)
+    }else{
+        res.status(401).json("NOt Found");
+    }
+
+    console.log(url)
+ 
+
+
+
+
+}
