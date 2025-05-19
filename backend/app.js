@@ -12,7 +12,7 @@ const app = express();
 connect();
 
 // Middleware
-app.use(cors()); // ✅ You imported cors but forgot to use it
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,4 +21,4 @@ app.use('/api/url', router);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT.blue, () => console.log(`🚀 Server running on http://localhost:${PORT.bgMagenta}`));
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

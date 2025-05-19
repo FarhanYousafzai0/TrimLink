@@ -1,6 +1,5 @@
 import express from 'express'
-import { postURl } from '../Controllers/UrlControler.js';
-
+import { postURL } from '../Controllers/UrlControler.js';
 
 export const router = express.Router();
 
@@ -8,7 +7,7 @@ export const router = express.Router();
 
 // Post Url:
 
-router.post('/add-url',postURl);
+router.post('/add-url',postURL);
 
 
 // Get Url:
