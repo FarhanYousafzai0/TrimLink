@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { router } from './src/Routes/UrlRoutes.js';
 import connect from './src/Config/ConnectDB.js';
 import colors from 'colors'
+import { userRouter } from './src/Routes/UserRoutes.js';
 
 dotenv.config(); // ✅ Corrected typo from `dotevn` to `dotenv`
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use('/api/user',userRouter);
 app.use('/api/url', router);
 
 // Start server

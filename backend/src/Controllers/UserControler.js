@@ -1,110 +1,86 @@
-import User from "../Models/UserMode"
+import User from "../Models/UserModel.js";
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
+// Token Generator
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "15d" });
+};
 
+// Register Controller
+export const RegisterUser = async (req, res) => {
+  const { name, email, password, gender } = req.body;
 
+  if (!name || !email || !password || !gender) {
+    return res.status(400).json({ message: "Please fill all the fields!" });
+  }
 
-// Generate Token:
+  const existingName = await User.findOne({ name });
+  if (existingName) {
+    return res.status(400).json({ message: "Username already exists!" });
+  }
 
- const generateToken = async(id)=>{
-return jwt.sign({id},process.env.JWT_SECRET,{expiresIn:"15d"})
-}
+  const existingEmail = await User.findOne({ email });
+  if (existingEmail) {
+    return res.status(400).json({ message: "Email already exists!" });
+  }
 
+  const hashPassword = await bcrypt.hash(password, 10);
 
+  const avatarUrl = gender === "male"
+    ? `https://avatar.iran.liara.run/public/boy?username=${name}`
+    : `https://avatar.iran.liara.run/public/girl?username=${name}`;
 
-
-
-
-// Register Controller:
-export const RegisterUser = async(req,res)=>{
-
-const {name,email,password,gender} = req.body
-
-if(!name || email || password || gender){
-    res.status(400).json({message:"Please fill all the fields!"})
-}
-
-const existingName =  User.findOne({name});
-const existingEmail = User.findOne({email});
-
-
-if(existingName){
-    res.status(400).json({message:"Username already exist!"})
-}
-
-if(existingEmail){
-    res.status(400).json({message:"Email already exist"});
-}
-
-
- const hashPassowrd = await bcrypt.hash(password,10);
-
- const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-  const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
-
-
-const newUser = new User({
-name,
-password : hashPassowrd,
-email,
-avator:gender === male ? boyProfilePic : girlProfilePic,
-gender,
-
-})
-
-res.status(200).json({
-
-id:newUser._id,
-name:newUser.name,
-email:newUser.email,
-avator:newUser.avatar,
-gender:newUser.gender,
-token:generateToken(newUser._Id)
-
-});
-
-
-}
-
-
-
-// Login User:
-
-
-
-export const LoginUser= async(req,res)=>{
-
-
-    const {name,passowrd}= req.body
-
-    if(!name || !passowrd){
-        res.status(401).json({message:"Please fill both fields!"})
-    }
-
-
-    const foundUser = await User.findOne({name});
-
-    if(!foundUser){
-        res.status(401).json({message:"User not found"});
-    }
-const comparePassoword = await bcrypt.compare(passowrd ,foundUser.passowrd)
-
- if(!comparePassoword){
-    res.status(401).json({message:"Passoword is invalid"})
- }
-
+  const newUser = await User.create({
+    name,
+    email,
+    password: hashPassword,
+    avatar: avatarUrl,
+    gender
+  });
 
   res.status(200).json({
+    id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    avatar: newUser.avatar,
+    gender: newUser.gender,
+    token: generateToken(newUser._id)
+  });
+};
 
-    id:foundUser._id,
-name:foundUser.name,
-email:foundUser.email,
-avator:foundUser.avatar,
-gender:foundUser.gender,
-token:generateToken(foundUser._Id)
-  })
+// Login Controller
+export const LoginUser = async (req, res) => {
+  const { identifier, password } = req.body; // 'identifier' can be either name or email
 
-}
+  if (!identifier || !password) {
+    return res.status(400).json({ message: "Please fill both fields!" });
+  }
 
-// 
+  // Check if identifier is an email
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+
+  // Find user by email or name
+  const foundUser = await User.findOne(
+    isEmail ? { email: identifier } : { name: identifier }
+  );
+
+  if (!foundUser) {
+    return res.status(401).json({ message: "User not found" });
+  }
+
+  const isMatch = await bcrypt.compare(password, foundUser.password);
+  if (!isMatch) {
+    return res.status(401).json({ message: "Password is invalid" });
+  }
+
+  res.status(200).json({
+    id: foundUser._id,
+    name: foundUser.name,
+    email: foundUser.email,
+    avatar: foundUser.avatar,
+    gender: foundUser.gender,
+    token: generateToken(foundUser._id)
+  });
+};
+ 
