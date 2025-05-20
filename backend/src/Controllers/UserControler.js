@@ -84,3 +84,20 @@ export const LoginUser = async (req, res) => {
   });
 };
  
+
+
+
+export const getProfile = async(req,res)=>{
+
+    if (!req.user) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
+  res.status(200).json({
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    avatar: req.user.avatar,
+    gender: req.user.gender
+  });
+}
