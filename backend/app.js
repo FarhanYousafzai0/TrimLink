@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { router } from './src/Routes/UrlRoutes.js';
 import connect from './src/Config/ConnectDB.js';
 import colors from 'colors'
+
 dotenv.config(); // ✅ Corrected typo from `dotevn` to `dotenv`
 
 const app = express();
@@ -12,7 +13,7 @@ const app = express();
 connect();
 
 // Middleware
-
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const url = 'http://localhost:1567/api/url';
+const url = 'http://localhost:1567/';
 
 // 🔗 POST: Create a short URL (with or without userId)
 export const posttUrl = async (urlData) => {
   try {
-    const response = await axios.post(`${url}/add-url`, urlData);
+    const response = await axios.post(`${url}api/url/add-url`, urlData);
     return response.data;
     console.log(response.data)
   } catch (error) {

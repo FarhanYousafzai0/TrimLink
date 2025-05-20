@@ -1,5 +1,6 @@
 // components/ResultDisplay.jsx
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 const ResultDisplay = ({ shortenedUrl, originalUrl }) => {
