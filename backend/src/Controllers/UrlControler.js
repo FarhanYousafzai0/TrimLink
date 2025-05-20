@@ -31,7 +31,7 @@ export const postURL = async (req, res) => {
 
     res.status(201).json({
   message: "Short URL created successfully",
-  shortUrl: shortCode,
+  shortUrl: process.env.APP_URL + shortCode,
   fullUrl: url,
   shortLink: `${req.protocol}://${req.get("host")}/${shortCode}`, // Full short link
   user: userId || "Guest",

@@ -1,14 +1,22 @@
+// components/ResultDisplay.jsx
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { fetchOriginalUrl } from "../Features/UrlSlice";
 
-const ResultDisplay = ({ shortLink, fullUrl }) => {
+const ResultDisplay = ({ shortenedUrl, originalUrl }) => {
   const [copied, setCopied] = useState(false);
+  const dispatch = useDispatch();
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(shortLink);
+    navigator.clipboard.writeText(shortenedUrl);
     setCopied(true);
     toast.success("Copied to clipboard!");
+
+    // Dispatch the GET API call to fetch original URL based on shortened URL
+    dispatch(fetchOriginalUrl(shortenedUrl));
+
     setTimeout(() => setCopied(false), 8000);
   };
 
@@ -69,18 +77,18 @@ const ResultDisplay = ({ shortLink, fullUrl }) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="overflow-hidden">
             <p className="text-sm text-gray-500 mb-1 truncate">Original URL:</p>
-            <p className="text-gray-700 truncate">{fullUrl}</p>
+            <p className="text-gray-700 truncate">{originalUrl}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="overflow-hidden">
               <p className="text-sm text-gray-500 mb-1">Shortened URL:</p>
               <a
-                href={shortLink}
+                href={shortenedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 font-medium truncate"
               >
-                {shortLink}
+                {shortenedUrl}
               </a>
             </div>
             <motion.button

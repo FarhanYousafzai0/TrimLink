@@ -8,7 +8,7 @@ const ShortenerForm = () => {
   const [url, seturl] = useState("");
 
   const dispatch = useDispatch();
-  const { urlError, urlLoading, shortUrl } = useSelector((state) => state.Url);
+const { urlError, urlLoading, originalUrl, shortUrl } = useSelector((state) => state.Url);
 
   const handleSumbiturl = (e) => {
     e.preventDefault();
@@ -16,10 +16,7 @@ const ShortenerForm = () => {
     dispatch(generateShortUrl({ url }));
   };
 
-  // shortUrl here is an object from your backend response, so:
-  // We need to pass shortLink and fullUrl to ResultDisplay
-  const shortLink = shortUrl?.shortLink || "";
-  const fullUrl = shortUrl?.fullUrl || url; // fallback to input if API response missing
+  const shortenedUrl = shortUrl?.shortUrl || "";
 
   return (
     <section className="max-w-4xl mx-auto mb-20">
@@ -53,7 +50,7 @@ const ShortenerForm = () => {
               type="submit"
               disabled={urlLoading}
               className={`px-8 py-4 rounded-lg cursor-pointer font-semibold text-white ${
-                urlLoading
+               urlLoading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
               } transition-all shadow-lg`}
@@ -66,10 +63,10 @@ const ShortenerForm = () => {
         {urlError && <p className="text-red-600 text-center mb-4">{urlError}</p>}
 
         <AnimatePresence>
-          {shortLink && (
-            <ResultDisplay
-              shortLink={shortLink}
-              fullUrl={fullUrl}
+          {shortenedUrl && (
+            <ResultDisplay 
+              shortenedUrl={shortenedUrl} 
+              originalUrl={url} 
             />
           )}
         </AnimatePresence>
