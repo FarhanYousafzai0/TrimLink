@@ -30,11 +30,12 @@ export const postURL = async (req, res) => {
     await newShortUrl.save();
 
     res.status(201).json({
-      message: "Short URL created successfully",
-      shortUrl: shortCode,
-      fullUrl: url,
-      user: userId || "Guest",
-    });
+  message: "Short URL created successfully",
+  shortUrl: shortCode,
+  fullUrl: url,
+  shortLink: `${req.protocol}://${req.get("host")}/${shortCode}`, // Full short link
+  user: userId || "Guest",
+});
 
   } catch (error) {
     console.error("Error creating short URL:", error);
